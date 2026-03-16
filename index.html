@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasino Automat - 3 Válce</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Jackpot Jmen</h1>
+            <p>3 válce, speciální symbol WILD a 16 výherců!</p>
+        </header>
+
+        <main>
+            <!-- Samotný automat -->
+            <div class="casino-machine">
+                <div class="slot-window">
+                    <div class="reels-container">
+                        <div class="reel" id="reel-1">
+                            <div class="slot-scroller" id="scroller-1">
+                                <div class="slot-item">PŘIPRAVENO</div>
+                            </div>
+                        </div>
+                        <div class="reel reel-middle" id="reel-2">
+                            <div class="slot-scroller" id="scroller-2">
+                                <div class="slot-item">PŘIPRAVENO</div>
+                            </div>
+                        </div>
+                        <div class="reel" id="reel-3">
+                            <div class="slot-scroller" id="scroller-3">
+                                <div class="slot-item">PŘIPRAVENO</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- SVG překryv pro výherní linie -->
+                    <svg class="win-lines-svg" viewBox="0 0 300 300" preserveAspectRatio="none">
+                        <line id="line-r1" class="win-line" x1="0" y1="50" x2="300" y2="50" />
+                        <line id="line-r2" class="win-line" x1="0" y1="150" x2="300" y2="150" />
+                        <line id="line-r3" class="win-line" x1="0" y1="250" x2="300" y2="250" />
+                        <line id="line-d1" class="win-line" x1="0" y1="0" x2="300" y2="300" />
+                        <line id="line-d2" class="win-line" x1="0" y1="300" x2="300" y2="0" />
+                    </svg>
+                    <div class="slot-overlay"></div>
+                </div>
+                
+                <button id="spin-btn" class="spin-btn">ZATOČIT</button>
+                
+                <div id="winner-display" class="winner-display hidden">
+                    <span class="winner-label" id="winner-label">Vítěz:</span>
+                    <h2 id="winner-name">-</h2>
+                </div>
+            </div>
+
+            <!-- Nastavení jmen -->
+            <div class="controls-section">
+                <h3>Seznam jmen (dvojklik na jméno pro vyřazení)</h3>
+                <div class="names-list-container">
+                    <div id="names-container" class="names-container">
+                        <div class="name-item" contenteditable="true">Jirka Moravec</div>
+                        <div class="name-item" contenteditable="true">Jaroslav Malý</div>
+                        <div class="name-item" contenteditable="true">Filip Rambousek</div>
+                        <div class="name-item" contenteditable="true">Ondřej Pittner</div>
+                        <div class="name-item" contenteditable="true">Matěj Stanko</div>
+                        <div class="name-item" contenteditable="true">Miloslav Synek</div>
+                        <div class="name-item" contenteditable="true">Štěpán Petrák</div>
+                        <div class="name-item" contenteditable="true">Tomáš Obermajer</div>
+                        <div class="name-item" contenteditable="true">Aleš Nádvorník</div>
+                        <div class="name-item" contenteditable="true">Jakub Sokolovski</div>
+                        <div class="name-item" contenteditable="true">Jaroslav Švejda</div>
+                        <div class="name-item" contenteditable="true">Antonín Šimek</div>
+                        <div class="name-item" contenteditable="true">Václav Trčka</div>
+                        <div class="name-item" contenteditable="true">Václav Vlček</div>
+                        <div class="name-item" contenteditable="true">Lukáš Vrátny</div>
+                        <div class="name-item" contenteditable="true">Martin Vymlátil</div>
+                    </div>
+                </div>
+                <div class="status-bar" id="status-bar">Načteno 16 jmen</div>
+            </div>
+        </main>
+
+        <!-- Big Win Animace (Libovolný výběr) -->
+        <div id="big-win-overlay" class="big-win-overlay hidden">
+            <div class="big-win-content">
+                <div class="stars"></div>
+                <h2 class="big-win-mega">BIG WIN!</h2>
+                <h1 class="big-win-title">LIBOVOLNÝ VÝBĚR!</h1>
+                <p class="big-win-subtitle">Padly symboly WILD</p>
+                <div class="coins-shower"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

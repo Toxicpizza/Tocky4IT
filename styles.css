@@ -1,0 +1,463 @@
+:root {
+    --bg-color: #0f0f13;
+    --machine-bg: #1a1a24;
+    --accent-primary: #f9d342;
+    --accent-secondary: #ff3366;
+    --text-main: #ffffff;
+    --text-muted: #a0a0b0;
+    --wild-color: #00ffcc; /* Barva pro speciální WILD symbol */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 50% 0%, #2a2a3b 0%, var(--bg-color) 60%);
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1000px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 25px rgba(249, 211, 66, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* KASINO AUTOMAT */
+.casino-machine {
+    background-color: var(--machine-bg);
+    border: 4px solid #2a2a35;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8),
+                inset 0 0 30px rgba(0,0,0,0.9),
+                0 0 15px var(--accent-secondary);
+    position: relative;
+}
+
+/* Okno slotu - nyní na 3 řádky (3x 150px = 450px) */
+.slot-window {
+    background: #000;
+    border: 4px solid #444;
+    border-radius: 10px;
+    height: 450px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 30px rgba(0,0,0,1);
+}
+
+.reels-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.reel {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.reel-middle {
+    border-left: 2px solid #333;
+    border-right: 2px solid #333;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.slot-scroller {
+    display: flex;
+    flex-direction: column;
+}
+
+.slot-item {
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    padding: 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Playfair Display', serif;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    transition: color 0.5s ease, text-shadow 0.5s ease, transform 0.5s ease;
+}
+
+.slot-item.wild-symbol {
+    color: var(--wild-color);
+    text-shadow: 0 0 15px var(--wild-color), 2px 2px 4px rgba(0,0,0,0.8);
+    font-size: 2.2rem;
+}
+
+/* Animace přeměny Wild -> Jméno */
+.slot-item.wild-morph {
+    color: var(--accent-primary);
+    text-shadow: 0 0 20px var(--accent-primary);
+    transform: scale(1.1);
+}
+
+/* SVG Výherní linie */
+.win-lines-svg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.win-line {
+    stroke: var(--accent-primary);
+    stroke-width: 4;
+    filter: drop-shadow(0 0 10px var(--accent-primary));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    /* Pěkná neonová textura okolo čáry */
+    stroke-linecap: round;
+}
+
+.win-line.active {
+    opacity: 1;
+    animation: flashLine 1.5s infinite alternate;
+}
+
+@keyframes flashLine {
+    0% { stroke-width: 4; filter: drop-shadow(0 0 10px var(--accent-primary)); }
+    100% { stroke-width: 6; filter: drop-shadow(0 0 20px #fff); stroke: #fff; }
+}
+
+.slot-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, 
+        rgba(0,0,0,0.9) 0%, 
+        rgba(0,0,0,0) 25%, 
+        rgba(0,0,0,0) 75%, 
+        rgba(0,0,0,0.9) 100%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Tlačítko roztočení */
+.spin-btn {
+    width: 100%;
+    margin-top: 2.5rem;
+    padding: 1.2rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-primary), #d4af37, var(--accent-primary));
+    background-size: 200% auto;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 5px 15px rgba(249, 211, 66, 0.4);
+    transition: all 0.3s ease;
+}
+
+.spin-btn:hover {
+    background-position: right center;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(249, 211, 66, 0.7);
+}
+
+.spin-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 10px rgba(249, 211, 66, 0.4);
+}
+
+.spin-btn:disabled {
+    background: #444;
+    color: #777;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Vítězný panel */
+.winner-display {
+    margin-top: 1.5rem;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 51, 102, 0.15);
+    border: 2px solid var(--accent-secondary);
+    border-radius: 10px;
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+}
+
+.winner-display.success {
+    background: rgba(249, 211, 66, 0.15);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 20px rgba(249, 211, 66, 0.4);
+}
+
+.winner-display.hidden {
+    display: none;
+}
+
+.winner-label {
+    color: var(--text-main);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+.winner-display h2 {
+    color: var(--accent-primary);
+    font-size: 2.2rem;
+    margin-top: 0.5rem;
+    font-family: 'Playfair Display', serif;
+    text-shadow: 0 0 10px rgba(249, 211, 66, 0.5);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Kontrolní panel jmen */
+.controls-section {
+    background-color: var(--machine-bg);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 2px solid #2a2a35;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.controls-section h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: var(--accent-primary);
+    text-align: center;
+}
+
+.names-list-container {
+    width: 100%;
+    background-color: #0a0a0f;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 0.5rem;
+    height: 380px;
+    overflow-y: auto;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.names-list-container:focus-within {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 10px rgba(249, 211, 66, 0.3);
+}
+
+.names-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.name-item {
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    cursor: text;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.name-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.name-item:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-left-color: var(--accent-primary);
+}
+
+/* Modifikátor pro vyřazené jméno */
+.name-item.strike-through {
+    text-decoration: line-through;
+    color: #555;
+    background: rgba(255, 51, 102, 0.05);
+    border-left-color: var(--accent-secondary);
+    cursor: pointer;
+}
+
+.name-item.strike-through:hover {
+    background: rgba(255, 51, 102, 0.15);
+    color: #888;
+}
+
+/* Custom Scrollbar pro names list */
+.names-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+.names-list-container::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2); 
+}
+.names-list-container::-webkit-scrollbar-thumb {
+    background: #444; 
+    border-radius: 4px;
+}
+.names-list-container::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary); 
+}
+
+.status-bar {
+    margin-top: 0.8rem;
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* --- BIG WIN ANIMACE OVERLAY --- */
+.big-win-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle, rgba(20,20,30,0.95) 0%, rgba(0,0,0,0.98) 100%);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.big-win-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+    animation: bgFlash 2s infinite alternate;
+}
+
+.big-win-overlay.hidden {
+    display: none;
+}
+
+.big-win-content {
+    text-align: center;
+    position: relative;
+    transform: scale(0.5);
+    opacity: 0;
+}
+
+.big-win-overlay.active .big-win-content {
+    animation: explodeIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.big-win-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 6rem;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    text-shadow: 0 0 40px var(--accent-primary), 0 0 80px #d4af37, 4px 4px 0px #000;
+    margin: 0;
+    letter-spacing: 5px;
+    background: linear-gradient(to bottom, #fffde4, #f9d342, #b8860b);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.8));
+    animation: titlePulse 1.5s infinite alternate;
+}
+
+.big-win-subtitle {
+    font-size: 2rem;
+    color: #fff;
+    margin-top: 1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px var(--wild-color);
+}
+
+@keyframes titlePulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 20px var(--accent-primary)); }
+    100% { transform: scale(1.05); filter: drop-shadow(0 0 50px #fff); }
+}
+
+.big-win-mega {
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: var(--accent-secondary);
+    text-transform: uppercase;
+    text-shadow: 0 0 40px var(--accent-secondary), 0 0 80px #ff0055, 4px 4px 0px #000;
+    margin: 0;
+    line-height: 1;
+    animation: megaPulse 0.5s infinite alternate;
+}
+
+@keyframes megaPulse {
+    0% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 20px var(--accent-secondary)); }
+    100% { transform: scale(1.1) rotate(2deg); filter: drop-shadow(0 0 60px #fff); }
+}
+
+@keyframes explodeIn {
+    0% { transform: scale(0.1); opacity: 0; }
+    60% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bgFlash {
+    0% { background: radial-gradient(circle, rgba(40,30,10,0.95) 0%, rgba(0,0,0,0.98) 100%); }
+    100% { background: radial-gradient(circle, rgba(100,20,50,0.95) 0%, rgba(0,0,0,0.98) 100%); }
+}
+
+@media (max-width: 768px) {
+    .big-win-mega { font-size: 4.5rem; }
+    .big-win-title { font-size: 2.5rem; }
+    .big-win-subtitle { font-size: 1.2rem; }
+}
